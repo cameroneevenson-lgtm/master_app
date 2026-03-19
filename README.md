@@ -51,4 +51,4 @@ C:\Tools\.venv\Scripts\python.exe app.py
 - This scaffold intentionally uses adapter boundaries instead of importing sibling app modules directly.
 - The sibling apps currently use overlapping top-level module names like `models.py` and `main_window.py`, so direct in-process imports would be brittle until those apps are packaged more cleanly.
 - The master app therefore starts by reading shared files/databases and launching sibling tools through subprocess adapters.
-
+- The Git-backed working repo now lives directly in `C:\Tools\master_app`.
