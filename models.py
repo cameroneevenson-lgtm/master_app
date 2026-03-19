@@ -12,18 +12,24 @@ DEFAULT_FABRICATION_ROOT = r"W:\LASER\For Battleshield Fabrication"
 DEFAULT_TRUCK_EXPLORER_LAUNCHER = str(TOOLS_DIR / "truck_nest_explorer" / "truck_nest_explorer.bat")
 DEFAULT_DASHBOARD_LAUNCHER = str(TOOLS_DIR / "fabrication_flow_dashboard" / "run_app.bat")
 DEFAULT_RADAN_KITTER_LAUNCHER = str(TOOLS_DIR / "radan_kitter" / "radan_kitter.bat")
-DEFAULT_INVENTOR_TO_RADAN_ENTRY = str(TOOLS_DIR / "inventor_to_radan" / "inventor_to_radan.py")
+DEFAULT_INVENTOR_TO_RADAN_ENTRY = str(TOOLS_DIR / "inventor_to_radan" / "inventor_to_radan.bat")
 DEFAULT_DASHBOARD_DB_PATH = str(TOOLS_DIR / "fabrication_flow_dashboard" / "fabrication_flow.db")
 DEFAULT_TRUCK_REGISTRY_PATH = str(TOOLS_DIR / "fabrication_flow_dashboard" / "truck_registry.csv")
 DEFAULT_RPD_TEMPLATE_PATH = str(TOOLS_DIR / "truck_nest_explorer" / "Template" / "Template.rpd")
 DEFAULT_VENV_PYTHON = r"C:\Tools\.venv\Scripts\python.exe"
 DEFAULT_SUPPORT_FOLDERS = ("_bak", "_out", "_kits")
 DEFAULT_KIT_TEMPLATES = [
-    "BODY | PAINT PACK",
-    "PUMPHOUSE",
-    "CONSOLE | CONSOLE PACK",
-    "INTERIOR | INTERIOR PACK",
-    "EXTERIOR | EXTERIOR PACK",
+    "PAINT PACK",
+    "INTERIOR PACK",
+    "EXTERIOR PACK",
+    "CONSOLE PACK",
+    "CHASSIS PACK",
+    "PUMP HOUSE => PUMP PACK\\PUMP HOUSE",
+    "PUMP COVERING => PUMP PACK\\COVERING",
+    "PUMP MOUNTS => PUMP PACK\\MOUNTS",
+    "PUMP BRACKETS => PUMP PACK\\BRACKETS",
+    "STEP PACK",
+    "OPERATIONAL PANELS => PUMP PACK\\OPERATIONAL PANELS",
 ]
 TRUCK_NUMBER_PATTERN = re.compile(r"^F\d{5}$", re.IGNORECASE)
 
@@ -198,4 +204,3 @@ class WorkspaceKitRow:
     nest_summary_pdf_path: Path | None
     support_dirs: tuple[Path, ...]
     status_summary: str
-

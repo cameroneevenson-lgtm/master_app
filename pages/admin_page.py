@@ -63,7 +63,7 @@ class AdminPage(QWidget):
         self.create_support_folders_checkbox = QCheckBox("Create _bak / _out / _kits when scaffolding")
         self.kit_templates_edit = QPlainTextEdit()
         self.kit_templates_edit.setPlaceholderText(
-            "One kit mapping per line.\nExamples:\nBODY | PAINT PACK\nBODY | PAINT PACK => NESTS\\PAINT PACK"
+            "One kit mapping per line.\nExamples:\nPAINT PACK\nPUMP HOUSE => PUMP PACK\\PUMP HOUSE"
         )
         self.kit_templates_edit.setMinimumHeight(150)
 
@@ -161,4 +161,3 @@ class AdminPage(QWidget):
             lines.append(f"- {adapter.label}: {'ready' if adapter.exists else 'missing'}")
             lines.append(f"  {adapter.path_text or '(not configured)'}")
         self.diagnostics_label.setText("\n".join(lines))
-
