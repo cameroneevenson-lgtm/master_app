@@ -1,20 +1,21 @@
 # Master App
 
-`master_app` is the first scaffold for a unified fabrication shell that sits above:
+`master_app` now boots the same Truck Nest Explorer window from the master entrypoint, so the master app only shows the explorer workflow instead of the older multi-page shell.
+
+The older shell files are still in the repo for reference, but they are no longer the active UI.
+
+The project still sits above:
 
 - `fabrication_flow_dashboard`
 - `truck_nest_explorer`
 - `inventor_to_radan`
 - `radan_kitter`
 
-This first version focuses on:
+The active runtime now focuses on:
 
-- a single PySide6 shell with navigation
-- shared path/settings management
-- truck + kit discovery from release/fabrication roots
-- dashboard read-only visibility from `fabrication_flow.db`
-- adapter-style actions for launching sibling tools
-- a first-pass "run Inventor and copy outputs" workflow
+- the exact `truck_nest_explorer` view and workflow
+- the explorer's settings, actions, and truck/kit detail screens
+- a local master-app hot reload launcher with the same in-app reload banner behavior
 
 ## Run
 
@@ -32,23 +33,30 @@ cd C:\Tools\master_app
 C:\Tools\.venv\Scripts\python.exe app.py
 ```
 
-## Pages
+### Option 3: hot reload during development
 
-- `Home`
-  - overall counts and quick launches
-- `Truck Workspace`
+```powershell
+cd C:\Tools\master_app
+.\dev_run.bat
+```
+
+This mirrors the explorer hot reload flow:
+
+- watches Python files in both `master_app` and `truck_nest_explorer`
+- shows the in-app reload banner
+- auto-reloads after the timeout unless you click `Cancel Reload`
+
+## Active UI
+
+- `Truck Nest Explorer`
   - truck and kit visibility across L/W roots
   - scaffold creation
   - Inventor handoff
   - RADAN Kitter launch
-- `Dashboard`
-  - read-only truck and kit visibility from `fabrication_flow.db`
-- `Admin`
-  - paths, launchers, kit mappings, and template settings
+  - the same hot reload banner behavior when started through `dev_run.bat`
 
 ## Notes
 
-- This scaffold intentionally uses adapter boundaries instead of importing sibling app modules directly.
-- The sibling apps currently use overlapping top-level module names like `models.py` and `main_window.py`, so direct in-process imports would be brittle until those apps are packaged more cleanly.
-- The master app therefore starts by reading shared files/databases and launching sibling tools through subprocess adapters.
-- The Git-backed working repo now lives directly in `C:\Tools\master_app`.
+- The master bootstrap now loads the explorer window first on `sys.path` so the explorer's own `models.py`, `services.py`, and `settings_store.py` win over the older shell modules.
+- Hot reload handshake files for the master entrypoint live under `master_app\_runtime`.
+- The Git-backed working repo lives directly in `C:\Tools\master_app`.
