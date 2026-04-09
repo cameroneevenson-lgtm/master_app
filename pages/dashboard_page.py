@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QHBoxLayout,
@@ -115,27 +116,39 @@ class DashboardPage(QWidget):
             (item for item in self._truck_summaries if item.truck_number.upper() == truck_number.upper()),
             None,
         )
+        kit_rows = load_dashboard_kit_rows(self._settings.dashboard_db_path, truck_number)
+        released_count = sum(1 for row in kit_rows if row.release_state.strip().lower() == "released")
+        blocked_count = sum(1 for row in kit_rows if row.blocked)
         if summary is not None:
             planned = summary.planned_start_date or "-"
             notes = summary.notes or "-"
             self._summary_label.setText(
                 f"{summary.truck_number} | Build order {summary.build_order} | "
-                f"Day Zero {planned} | {summary.progress_summary} | Notes: {notes}"
+                f"Day Zero {planned} | {released_count}/{len(kit_rows)} released | "
+                f"{summary.progress_summary} | Blocked: {blocked_count} | Notes: {notes}"
             )
 
-        kit_rows = load_dashboard_kit_rows(self._settings.dashboard_db_path, truck_number)
         self._table.setRowCount(len(kit_rows))
         for row_index, row in enumerate(kit_rows):
+            blocked = row.blocked
+            released = row.release_state.strip().lower() == "released"
+            release_color = QColor("#D8F3DC") if released else QColor("#FFF3BF")
+            stage_color = QColor("#D8F3DC") if row.front_stage == "Complete" else None
+            blocked_color = QColor("#F8D7DA") if blocked else QColor("#D8F3DC")
             values = (
-                row.kit_name,
-                row.release_state or "-",
-                row.front_stage,
-                row.back_stage,
-                "Yes" if row.blocked else "No",
-                row.blocked_reason or row.pdf_links or "-",
+                (row.kit_name, None),
+                (row.release_state or "-", release_color),
+                (row.front_stage, stage_color),
+                (row.back_stage, stage_color),
+                ("Yes" if blocked else "No", blocked_color),
+                (row.blocked_reason or row.pdf_links or "-", QColor("#F8D7DA") if blocked else None),
             )
             for column_index, value in enumerate(values):
-                self._table.setItem(row_index, column_index, QTableWidgetItem(str(value)))
+                item_text, background = value
+                item = QTableWidgetItem(str(item_text))
+                if background is not None:
+                    item.setBackground(background)
+                self._table.setItem(row_index, column_index, item)
         self._table.resizeColumnsToContents()
 
     def _open_dashboard(self) -> None:
@@ -143,4 +156,3 @@ class DashboardPage(QWidget):
             launch_tool(self._settings.dashboard_launcher, self._settings)
         except Exception as exc:
             QMessageBox.critical(self, "Launch Failed", str(exc))
-

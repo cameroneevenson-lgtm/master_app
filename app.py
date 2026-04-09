@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import ctypes
-import importlib
 import os
 import sys
 from pathlib import Path
@@ -10,40 +9,11 @@ from PySide6.QtCore import QTimer
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication
 
+from main_window import MainWindow
+from styles import APP_STYLE
+
 APP_DIR = Path(__file__).resolve().parent
-TOOLS_DIR = APP_DIR.parent
-EXPLORER_DIR = TOOLS_DIR / "truck_nest_explorer"
-EXPLORER_MAIN_WINDOW_PATH = EXPLORER_DIR / "main_window.py"
-HOT_RELOAD_ENV_VARS = ("MASTER_APP_HOT_RELOAD_ACTIVE", "TNE_HOT_RELOAD_ACTIVE")
-EXPLORER_TOP_LEVEL_MODULES = (
-    "main_window",
-    "models",
-    "services",
-    "settings_store",
-    "flow_bridge",
-    "pdf_preview",
-)
-
-
-def _load_explorer_main_window():
-    if not EXPLORER_MAIN_WINDOW_PATH.exists():
-        raise FileNotFoundError(f"Truck Nest Explorer window not found: {EXPLORER_MAIN_WINDOW_PATH}")
-
-    explorer_root = str(EXPLORER_DIR)
-    if explorer_root not in sys.path:
-        sys.path.insert(0, explorer_root)
-
-    expected_path = EXPLORER_MAIN_WINDOW_PATH.resolve()
-    cached_module = sys.modules.get("main_window")
-    if cached_module is not None:
-        cached_path = Path(getattr(cached_module, "__file__", "")).resolve()
-        if cached_path != expected_path:
-            for module_name in EXPLORER_TOP_LEVEL_MODULES:
-                sys.modules.pop(module_name, None)
-
-    importlib.invalidate_caches()
-    explorer_main_window = importlib.import_module("main_window")
-    return explorer_main_window.MainWindow
+HOT_RELOAD_ENV_VARS = ("MASTER_APP_HOT_RELOAD_ACTIVE",)
 
 
 def _target_screen():
@@ -104,12 +74,11 @@ def _hot_reload_active() -> bool:
 
 
 def main() -> int:
-    explorer_main_window = _load_explorer_main_window()
-
     app = QApplication(sys.argv)
     app.setApplicationName("Master App")
+    app.setStyleSheet(APP_STYLE)
 
-    window = explorer_main_window(
+    window = MainWindow(
         hot_reload_active=_hot_reload_active(),
         runtime_dir=APP_DIR,
     )

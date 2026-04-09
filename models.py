@@ -153,10 +153,56 @@ class HomeSnapshot:
     dashboard_truck_count: int
     registry_truck_count: int
     active_registry_truck_count: int
+    released_kit_count: int
+    unreleased_kit_count: int
+    blocked_kit_count: int
+    complete_kit_count: int
     release_root_exists: bool
     fabrication_root_exists: bool
     dashboard_db_exists: bool
     adapters: tuple[AppAdapterStatus, ...]
+    ops_snapshot: "PublishedOpsSnapshot | None"
+
+
+@dataclass(frozen=True)
+class DashboardOverviewCounts:
+    visible_truck_count: int
+    released_kit_count: int
+    unreleased_kit_count: int
+    blocked_kit_count: int
+    complete_kit_count: int
+
+
+@dataclass(frozen=True)
+class PublishedRiskLine:
+    priority: int
+    title: str
+    detail: str
+
+
+@dataclass(frozen=True)
+class PublishedTruckRow:
+    truck_number: str
+    main_stage: str
+    sync_state: str
+    risk_category: str
+    issue_summary: str
+    tone: str
+
+
+@dataclass(frozen=True)
+class PublishedOpsSnapshot:
+    published_at_utc: str
+    active_trucks: int
+    late_releases: int
+    kits_behind_schedule: int
+    blocked_kits: int
+    laser_signal: str
+    bend_buffer_signal: str
+    weld_feed_a_signal: str
+    weld_feed_b_signal: str
+    risk_summary: tuple[PublishedRiskLine, ...]
+    truck_rows: tuple[PublishedTruckRow, ...]
 
 
 @dataclass(frozen=True)
